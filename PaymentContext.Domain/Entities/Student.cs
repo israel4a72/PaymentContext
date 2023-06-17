@@ -1,20 +1,39 @@
+using Flunt.Notifications;
+using Flunt.Validations;
+using PaymentContext.Domain.ValueObjects;
+using PaymentContext.Shared.Entities;
+
 namespace PaymentContext.Domain.Entities;
 
-public class Student
+public class Student : Entity
 {
-    public Student(string firstName, string lastName, string document, string email, IList<Subscription> subscriptions)
+    private IList<Subscription> _subscriptions;
+    public Student(Name name, Document document, Email email)
     {
-        FirstName = firstName;
-        LastName = lastName;
+        Name = name;
         Document = document;
         Email = email;
-        Subscriptions = subscriptions;
+        _subscriptions = new List<Subscription>();
+        
+        AddNotifications(name, document, email);
     }
 
-    public string FirstName { get; private set; }
-    public string LastName { get; private set; }
-    public string Document { get; private set; }
-    public string Email { get; private set; }
+    public Name Name { get; set; }
+    public Document Document { get; private set; }
+    public Email Email { get; private set; }
     
-    public IList<Subscription> Subscriptions { get; private set; }
+    public IReadOnlyCollection<Subscription> Subscriptions
+    {
+        get { return _subscriptions.ToArray(); }
+    }
+
+    public void AddSubscription(Subscription subscription)
+    {
+        AddNotifications(new Contract<Notification>()
+            .Requires()
+            .IsFalse(Subscriptions.Any(x => x.Active), "Student.Subscriptions", "You already have an active subscription")
+            .AreNotEquals(0, subscription.Payments.Count, "Student.Subscription.Payments", "This subscription has no payments")
+        );
+        _subscriptions.Add(subscription);
+    }
 }
