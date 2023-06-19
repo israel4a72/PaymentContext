@@ -39,7 +39,6 @@ public class StudentTests
     public void ShouldReturnErrorWhenSubscriptionHasNoPayment()
     {
         _student.AddSubscription(_subscription);
-        
         Assert.IsFalse(_student.IsValid);
     }
     [TestMethod]
