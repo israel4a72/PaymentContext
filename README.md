@@ -1,3 +1,3 @@
 # PaymentContext
-Referente ao curso Modelando Domínios Ricos da plataforma balta.io
+Referente ao curso Modelando Domínios Ricos da plataforma [Balta.io](https://balta.io)
 
